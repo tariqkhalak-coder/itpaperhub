@@ -119,58 +119,9 @@ const menuBtn = document.getElementById('menu-btn');
     mobileMenu.classList.toggle('hidden');
   });
 
-    // document.getElementById('uploadForm').addEventListener('submit', function (e) {
-    //   e.preventDefault();
-
-    //   const batch = document.getElementById('batch').value;
-    //   const semester = document.getElementById('semester').value;
-    //   const season = document.getElementById('season').value;
-    //   const subject = document.getElementById('subject').value;
-    //   const subjectcode = document.getElementById('subject code').value;
-    //   const file = document.getElementById('file').files[0];
-
-    //   if (!batch || !semester || !season || !subject || subjectcode || !file) {
-    //     alert('Please fill all fields and upload a PDF.');
-    //     return;
-    //   }
-
-    //   alert(`Paper uploaded:\n${subject} | ${batch} | ${semester} | ${season} | ${subjectcode}`);
-    //   // Yaha tum backend API call karke file save karoge
-    // });
+    
  
    
 
 
-  // FORGOT.html
-  
-document.getElementById('forgotForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-
-      const email = document.getElementById('email').value.trim();
-      const newPassword = document.getElementById('newPassword').value.trim();
-      const confirmPassword = document.getElementById('confirmPassword').value.trim();
-
-      if (newPassword !== confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-      }
-
-      try {
-        const res = await fetch('http://localhost:5000/api/auth/forgot', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, newPassword })
-        });
-        const data = await res.json();
-
-        if (data.success) {
-          alert('Password reset successful! You can now login.');
-          window.location.href = 'login.html';
-        } else {
-          alert(data.error || 'Password reset failed');
-        }
-      } catch (err) {
-        alert('Network error');
-        console.error(err);
-      }
-    });
+ 
