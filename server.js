@@ -5,14 +5,24 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
 
+// ✅ CORS Configuration
+app.use(cors({
+  origin: [
+    "http://localhost:3000", // Local frontend
+    "https://YOUR-FRONTEND-URL.onrender.com" // Replace with your frontend Render URL
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -102,7 +112,7 @@ app.post('/api/auth/forgot', async (req, res) => {
     });
 });
 
-// Upload paper (without season)
+// Upload paper
 app.post('/api/papers/upload', auth, upload.single('file'), (req, res) => {
   const { batch, semester, subject, subject_code } = req.body;
   const filePath = `uploads/${req.file.filename}`;
@@ -127,9 +137,7 @@ app.get('/api/papers', (req, res) => {
   });
 });
 
-//  New delete route
-const fs = require('fs');
-
+// Delete paper
 app.delete('/api/papers/:id', auth, (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ success: false, error: 'Not authorized' });
@@ -138,11 +146,9 @@ app.delete('/api/papers/:id', auth, (req, res) => {
   db.get(`SELECT file_path FROM papers WHERE id = ?`, [req.params.id], (err, row) => {
     if (err || !row) return res.json({ success: false, error: 'Paper not found' });
 
-    // Delete from DB
     db.run(`DELETE FROM papers WHERE id = ?`, [req.params.id], function (err) {
       if (err) return res.json({ success: false, error: 'Delete failed' });
 
-      // Delete file from uploads folder
       const filePath = path.join(__dirname, row.file_path);
       fs.unlink(filePath, (err) => {
         if (err) console.error("File delete error:", err);
@@ -153,11 +159,9 @@ app.delete('/api/papers/:id', auth, (req, res) => {
   });
 });
 
-
-
 // TEMP: Make a user admin (remove after use)
 app.get('/make-admin', (req, res) => {
-  const email = 'tariq@gmail.com'; // Tumhara account
+  const email = 'tariq@gmail.com'; // Change to your email
   db.run(`UPDATE users SET role='admin' WHERE email = ?`, [email], function (err) {
     if (err) return res.json({ success: false, error: err.message });
     if (this.changes === 0) return res.json({ success: false, error: 'No user found with that email' });
@@ -165,19 +169,10 @@ app.get('/make-admin', (req, res) => {
   });
 });
 
-// Serve frontend files from public folder
+// Serve frontend
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Agar koi unknown route aaye, to index.html serve karo
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
-
-
-
-
-
-
 
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
