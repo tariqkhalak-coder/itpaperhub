@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", function () {
     window.deletePaper = function (id) {
         if (!confirm("Are you sure you want to delete this paper?")) return;
 
-        fetch(`https://itpaperhub.onrender.com/api/papers/${id}`, {
+        fetch(`https://itpaperhub-backend.onrender.com/api/papers/${id}`, {
             method: "DELETE",
             headers: {
                 "Authorization": `Bearer ${token}`

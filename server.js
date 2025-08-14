@@ -16,7 +16,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'secret123';
 app.use(cors({
   origin: [
     "http://localhost:3000", // Local frontend
-    "https://YOUR-FRONTEND-URL.onrender.com" // Replace with your frontend Render URL
+    "https://itpaperhub-frontend.onrender.com" // Replace with your frontend Render URL
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
