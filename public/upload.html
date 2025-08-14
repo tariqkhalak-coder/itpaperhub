@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Paper | IT PaperHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white">
+
+
+  <!-- Navbar -->
+<nav class="bg-gray-800 shadow-lg relative">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold tracking-wide text-indigo-400"> IT PaperHub</h1>
+    
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex space-x-6">
+      <a href="index.html" class="text-gray-200 hover:text-indigo-400 text-lg font-medium">Home</a>
+      <a href="papers.html" class="text-gray-200 hover:text-indigo-400 text-lg font-medium">View Papers</a>
+      <a href="upload.html" class="text-indigo-400 text-lg font-medium underline">Upload Paper</a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button id="menu-btn" class="md:hidden text-gray-200 text-2xl focus:outline-none">☰</button>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden absolute right-4 top-14 bg-gray-900 border border-gray-700 rounded-lg shadow-lg w-44">
+      <a href="index.html" class="block px-4 py-2 text-gray-200 hover:bg-gray-700 hover:text-indigo-400 rounded-t-lg">Home</a>
+      <a href="papers.html" class="block px-4 py-2 text-gray-200 hover:bg-gray-700 hover:text-indigo-400">View Papers</a>
+      <a href="upload.html" class="block px-4 py-2 text-gray-200 hover:bg-gray-700 hover:text-indigo-400 rounded-b-lg">Upload Paper</a>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="hidden md:hidden flex flex-col px-4 pb-4 space-y-3 bg-gray-700">
+    <a href="index.html" class="nav-link text-lg font-medium" data-page="index.html">Home</a>
+    <a href="papers.html" class="nav-link text-lg font-medium" data-page="papers.html">View Papers</a>
+    <a href="upload.html" class="nav-link text-lg font-medium" data-page="upload.html">Upload Paper</a>
+  </div>
+</nav>
+
+  <!-- Upload Form -->
+  <div class="max-w-2xl mx-auto mt-12 bg-gray-800 p-8 rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-semibold mb-6 text-indigo-400">Upload a New  Mid-Semester Paper</h2>
+    <form id="uploadForm" class="space-y-6">
+
+      <!-- Batch -->
+      <div>
+        <label class="block mb-2 text-sm font-medium">Select Batch</label>
+        <select id="batch" class="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:border-indigo-500">
+          <option value="">-- Select Batch --</option>
+          <option value="2021-2025">2021-2025</option>
+          <option value="2022-2026">2022-2026</option>
+          <option value="2023-2027">2023-2027</option>
+          <option value="2024-2028">2024-2028</option>
+          <option value="2024-2028">2025-2029</option>
+        </select>
+      </div>
+
+      <!-- Semester -->
+      <div>
+        <label class="block mb-2 text-sm font-medium">Select Semester</label>
+        <select id="semester" class="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:border-indigo-500">
+          <option value="">-- Select Semester --</option>
+          <option value="SEM 1">SEM 1</option>
+          <option value="SEM 2">SEM 2</option>
+          <option value="SEM 3">SEM 3</option>
+          <option value="SEM 4">SEM 4</option>
+          <option value="SEM 5">SEM 5</option>
+          <option value="SEM 6">SEM 6</option>
+          <option value="SEM 7">SEM 7</option>
+          <option value="SEM 8">SEM 8</option>
+        </select>
+      </div>
+
+
+      <!-- Subject -->
+      <div>
+        <label class="block mb-2 text-sm font-medium">Subject Name</label>
+        <input type="text" id="subject" placeholder="Enter subject name"
+               class="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:border-indigo-500">
+      </div>
+
+      <!-- Subject code  -->
+       <div>
+        <label class="block mb-2 text-sm font-medium">Subject Code</label>
+        <input type="number" id="subject_code" placeholder="Enter subject Code"
+               class="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:border-indigo-500">
+      </div>
+
+      <!-- File -->
+      <div>
+        <label class="block mb-2 text-sm font-medium">Upload PDF</label>
+        <input type="file" id="file" accept="application/pdf"
+               class="w-full p-3 rounded-md bg-gray-700 border border-gray-600 focus:outline-none focus:border-indigo-500">
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold">
+        Upload Paper
+      </button>
+    </form>
+  </div>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const uploadForm = document.getElementById('uploadForm');
+    const token = localStorage.getItem('token'); 
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    uploadForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        // ✅ Login check
+        if (!token || !user) {
+            showLoginModal();
+            return;
+        }
+
+        const batch = document.getElementById('batch').value;
+        const semester = document.getElementById('semester').value;
+        const subject = document.getElementById('subject').value;
+        const subject_code = document.getElementById('subject_code').value;
+        const file = document.getElementById('file').files[0];
+
+        if (!file) {
+            alert('Please select a file');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('batch', batch);
+        formData.append('semester', semester);
+        formData.append('subject', subject);
+        formData.append('subject_code', subject_code);
+        formData.append('file', file);
+
+        try {
+            const res = await fetch('http://localhost:5000/api/papers/upload', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message || 'Paper uploaded successfully!');
+                uploadForm.reset();
+            } else {
+                alert(data.error || 'Upload failed');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('Something went wrong');
+        }
+    });
+
+    // ✅ Modal functions
+    window.showLoginModal = function () {
+        document.getElementById("loginModal").classList.remove("hidden");
+        document.getElementById("loginModal").classList.add("flex");
+    };
+
+    document.getElementById("closeModal").addEventListener("click", () => {
+        document.getElementById("loginModal").classList.add("hidden");
+        document.getElementById("loginModal").classList.remove("flex");
+    });
+
+    document.getElementById("goToLogin").addEventListener("click", () => {
+        window.location.href = "login.html";
+    });
+
+});
+</script>
+
+
+
+
+<!-- External JavaScript -->
+  <script src="script.js"></script>
+
+
+<div id="loginModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
+    <h2 class="text-lg font-bold mb-4">Login Required</h2>
+    <p class="text-gray-600 mb-4">Please login to upload papers.</p>
+    <button id="goToLogin" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">Go to Login</button>
+    <button id="closeModal" class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded ml-2">Cancel</button>
+  </div>
+</div>
+
+</body>
+</html>

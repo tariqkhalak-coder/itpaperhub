@@ -1,0 +1,80 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - ITPaperHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+
+  <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center mb-6 text-indigo-400">Login to ITPaperHub</h1>
+
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label class="block mb-1 text-sm">Email</label>
+        <input type="email" id="email" name="email" class="w-full p-3 rounded bg-gray-700 border border-gray-600" placeholder="you@example.com" required>
+      </div>
+      <div>
+        <label class="block mb-1 text-sm">Password</label>
+        <input type="password" id="password" name="password" class="w-full p-3 rounded bg-gray-700 border border-gray-600" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold">Login</button>
+    </form>
+
+    <p class="mt-4 text-sm text-gray-400 text-center">
+  Forgot your password?
+  <a href="forgot_password.html" class="text-indigo-400 hover:underline">Reset here</a>
+</p>
+
+
+    <p class="mt-4 text-sm text-gray-400 text-center">
+      Don't have an account?
+      <a href="register.html" class="text-indigo-400 hover:underline">Register</a>
+    </p>
+  </div>
+
+  <script>
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+
+  if (!email || !password) {
+    alert('Please enter email and password.');
+    return;
+  }
+
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+  localStorage.setItem('token', data.token);
+  localStorage.setItem('user', JSON.stringify(data.user));
+
+  alert('Login successful!');
+  setTimeout(() => {
+    window.location.href = 'index.html'; 
+  }, 500); // 0.5 second delay
+}
+
+  } catch (err) {
+    console.error(err);
+    alert('Network error. Please try again.');
+  }
+});
+</script>
+
+
+
+</body>
+</html>
